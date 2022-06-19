@@ -10,6 +10,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
+from pipeline import categorical_pipeline, full_processor, numeric_pipeline
+
 
 def main(args):
     diabetes = pd.read_csv(args.file_path).dropna()
@@ -18,23 +20,6 @@ def main(args):
 
     num_cols = X.select_dtypes(include="number").columns
     cat_cols = X.select_dtypes(exclude="number").columns
-    categorical_pipeline = Pipeline(
-        steps=[
-            ("impute", SimpleImputer(strategy="most_frequent")),
-            ("oh-encode", OneHotEncoder(handle_unknown="ignore", sparse=False)),
-        ]
-    )
-
-    numeric_pipeline = Pipeline(
-        steps=[("impute", SimpleImputer(strategy="mean")), ("scale", StandardScaler())]
-    )
-
-    full_processor = ColumnTransformer(
-        transformers=[
-            ("numeric", numeric_pipeline, num_cols),
-            ("categorical", categorical_pipeline, cat_cols),
-        ]
-    )
 
     X_processed = full_processor.fit_transform(X)
     y_processed = SimpleImputer(strategy="most_frequent").fit_transform(
