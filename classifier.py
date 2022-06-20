@@ -14,9 +14,9 @@ from pipeline import categorical_pipeline, full_processor, numeric_pipeline
 
 
 def main(args):
-    diabetes = pd.read_csv(args.file_path).dropna()
-    X = diabetes.drop(columns=[args.target_column])
-    y = diabetes[args.target_column]
+    data = pd.read_csv(args.file_path).dropna()
+    X = data.drop(columns=[args.target_column])
+    y = data[args.target_column]
 
     num_cols = X.select_dtypes(include="number").columns
     cat_cols = X.select_dtypes(exclude="number").columns
